@@ -6,7 +6,7 @@
 "use strict";
 
 // You may modify this for testing purposes.
-const data = [
+let data = [
 	{
 		"id": 272822514,
 		"firstName": "Billy",
@@ -294,3 +294,5 @@ const data = [
 		"currentSpouse": null
 	}
 ];
+
+

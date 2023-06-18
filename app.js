@@ -1,4 +1,3 @@
-
 function app(people) {
     displayWelcome();
     runSearchAndMenu(people);
@@ -25,33 +24,6 @@ function runSearchAndMenu(people) {
 }
 
 
-function searchByTraits(people) {
-    const traitChoice = validatedPrompt('Please enter the trait you want to search fo (e.g. occupation, eyeColor):'
-    ['id', 'firstName', 'lastName', 'gender', 'dob', 'height', 'weight', 'eyeColor', 'occupation']);
-    const traitValue = validatedPrompt('Please enter the value of the trait you want to searh for:');
-
-    const results = [];
-
-    for (const person of people){
-    if(person[traitChoice] === traitValue) {
-        results.push(person);    
-    }
- }
-
- if (results.length === 0) {
-    alert('No results found for ${traitChoice} = ${traitValue}');
- }
-
-return results
-
-}
-
-
-
-
-
-
-
 
 function searchPeopleDataSet(people) {
 
@@ -76,58 +48,14 @@ function searchPeopleDataSet(people) {
             return searchPeopleDataSet(people);
     }
 
-    return results;
+    
 }
-
-function searchByTraits(people) {
-    let searchCriteria = [];
-
-    // prompt the user to enter search criteria
-    while (searchCriteria.length < 5) {
-        const trait = validatedPrompt(
-            'Please enter a trait to search for (${searchCriteria.length + 1}/5).',
-            ['gender', 'dob', 'height', 'weight', 'eyeColor', 'occupation']
-        );
-        const value = prompt('Please enter the ${trait} value to search for.');
-        searchCriteria.push({trait, value });
-
-        const continueSearch = validatedPrompt('Would you like to add another search criteria? (y/n)').toLowerCase();
-        if (continueSearch !== 'y') {
-            break;
-        }
-    }
-
-    // Search for people based on the search criteria
-    let results = people;
-    for (const {trait, value } of searchCriteria) {
-        results = results.filter(person => person[trait] === value);
-        if (results.length === 1) {// only one person left, no need to contune searching
-        break;
-    }
-}
-
-//Display search results
-if (results.length === 0) {
-    alert('No matching records found.');
-} else if (results.length === 1) {
-    alert('Found one matching record:\n\n${formatPerson(results[0])}');
-} else {
-    const formattedResults = results.map(formatPerson).join('\n\n');
-    alert('Found ${results.length} matching records: \n\n${formattedResults}');
-}
-
-
-return results;
-
-
-
-
     if (results.length === 0) {
         alert('No results found.');
         return [];
     }
 
-    const resultNames = results.map((person) => '${person.firstName} ${person.lastName}');
+    const resultNames = results.map((person) => '${person.firstName} , ${person.lastName}');
     const selectedResultIndex = validatedPrompt('Please select a person:', resultNames) - 1;
     const selectedPerson = results[selectedResultIndex];
 
@@ -163,9 +91,12 @@ return results;
         } else {
             const message ="Immediate family members:\n${immediateFamilyNames.join('\n')}";
             alert(message);
+        }
+
+        return [selectedPerson];
 
         }
-    } else if (actionChoice === 'Display descendants') {
+     else if (actionChoice === 'Display descendants') {
         const descendants =[];
 
         function findDescendants(person) {
@@ -192,39 +123,9 @@ return results;
 
 
 
-    const immediateFamily = people.filter((person) => {
-        return person.currentSpouse === selectedPerson.id ||
-        person.parents.includes(selectedPerson.id) ||
-        selectedPerson.parents.includes(person.id) ||
-        (person.id !== selectedPerson.id && person.parents.some((parent) => selectedPerson.parents.includes(parent)));
-    });
 
-    const immediateFamilyNames = immediateFamily.map((person) => {
-        let relation;
-        if(person.currentSpouse === selectedPerson.id) {
-            relation = 'Spouse';
-        } else if (person.parents.includes(selectedPerson.id)) {
-            relation = person.gender === 'male' ? 'Father' : 'Mother';
-        } else if (selectedPerson.parents.includes(person.id)) {
-            relation = person.gender === 'male' ? 'Son': 'Daughter';
-        } else {
-            relation = 'Sibling';
-        }
-        return '${person.firstName} ${person.lastName} (${relation})';
-    });
-
-    if (immediateFamilyNames.length === 0) {
-        alert('No immediate family members found.');
-    } else {
-        const message = "Immediate family members:\n${immediateFamilyNames.join('\n')}";
-        alert(message);
-    }
-
-    const message = 'ID: ${selectedPerson.id}\nName: ${selectedPerson.firstName}${selectedPerson.lastName}\nGender:${selectedPerson.gender}\nDate of Birth:${selectedPerson.dob}\nHeight: ${selectedPerson.height}\nWeight:${selectedPerson.weight}\nEye Color: ${selectedPerson.eyeColor}\nOccupation:${selectedPerson.occupation}';
-
-
-    return [selectedPerson];
-}
+    
+   
 
 
 
@@ -237,6 +138,51 @@ function formatPerson(person) {
     return '${person.firstName} ${person.lastName}, ${person.gender}, DOB:${person.dob}, Height: ${person.height} inches, Weight: ${person.weigiht} lbs, Eye Color: ${person.eyeColor}, Occupation: ${person.occupation}';
 }
 
+
+function searchByTraits(people) {
+    let searchCriteria = [];
+
+    // prompt the user to enter search criteria
+    while (searchCriteria.length < 5) {
+        const trait = validatedPrompt(
+            'Please enter a trait to search for.',
+            ['gender', 'dob', 'height', 'weight', 'eyeColor', 'occupation']
+        );
+
+        const value = prompt('Please enter the value to search for.');
+        searchCriteria.push({trait, value });
+
+        const continueSearch = validatedPrompt('Would you like to add another search criteria? (y/n)').toLowerCase();
+        if (continueSearch !== 'y') {
+            break;
+        }
+    }
+
+    // Search for people based on the search criteria
+        let results = people;
+        for (const {trait, value } of searchCriteria) {
+            results = results.filter(person => person[trait] === value);
+        if (results.length === 1) {// only one person left, no need to contune searching
+            break;
+        }
+
+        }
+
+
+            //Display search results
+        if (results.length === 0) {
+        alert('No matching records found.');
+    } else if (results.length === 1) {
+        alert('Found one matching record:\n\n${formatPerson(results[0])}');
+    } else {
+        const formattedResults = results.map(formatPerson).join('\n\n');
+        alert('Found ${results.length} matching records: \n\n${formattedResults}');
+}
+
+
+    return results;
+        
+    }
 
 
 
@@ -263,27 +209,101 @@ function mainMenu(person, people) {
 
     switch (mainMenuUserActionChoice) {
         case "info":
-            //! TODO
-            // displayPersonInfo(person);
+            
+        displayPersonInfo(person);
             break;
+
+
         case "family":
-            //! TODO
-            // let personFamily = findPersonFamily(person, people);
-            // displayPeople('Family', personFamily);
+            
+             let personFamily = findPersonFamily(person, people);
+             displayPeople('Family', personFamily);
             break;
         case "descendants":
-            //! TODO
-            // let personDescendants = findPersonDescendants(person, people);
-            // displayPeople('Descendants', personDescendants);
+            
+             let personDescendants = findPersonDescendants(person, people);
+             displayPeople('Descendants', personDescendants);
             break;
-        case "quit":
+
+    
+
+        case "research":
+            let searchCriteria = prompt('Enter search criteria:');
+            let outcome = searchPeople(searchCriteria, people);
+            while (results.length > 1) {
+                searchCriteria = prompt('Multiple matching people found (${results.length}). \nEnter additional search criteria to filter further:');
+                outcome = searchPeople(searchCriteria, outcome);
+            }
+            if (outcome.length === 1) {
+                displayPersonInfo(outcome[0]);
+            } else {
+                alert('No mathcing people found.');
+            }
+            break;
+            
+            case "quit":
             return;
         default:
             alert('Invalid input. Please try again.');
+            
     }
 
     return mainMenu(person, people);
 }
+
+function findPersonDescendants(person, people) {
+    let descendants = [];
+    if (person.children.length === 0) {
+        return descendants;
+    }
+    const children = people.filter(p => person.children.includes(p.id));
+    descendants.push(...children);
+    children.forEach(child => {
+        descendants.push(...findPersonDescendants(child, people));
+    });
+    return descendants;
+}
+
+
+function searchPeople(criteria, people) {
+    const traits = criteria.split('');
+    let results = people;
+    traits.forEach(trait => {
+        const [key,value] = triat.split(':');
+        results = results.filter(p => p[key] === value);
+    });
+    return results;
+}
+
+
+
+
+
+function findPersonFamily(person, people) {
+    let family = [];
+    if (person.currentSpouse) {
+        const spouse =  people.find(p => p.id === person.currentSpouse);
+        family.push({name: '${spouse.firstName} ${spouse.lastName}', relaton: 'Spouse'});
+    }
+    if (person.parents.length > 0) {
+        const parents = people.filter(p => person.parents.includes(p.id));
+        parents.forEach(parent => {
+            const relation = parent.gender === 'male' ? 'Father' : 'Mother';
+            family.push({name: '${parent.firstName} ${parent.lastName}', relation: relation});
+        });
+    }
+    if (person.parents.length === 0) {
+        const Siblings = people.filter(p => p.id !== person.id && p.parents.length > 0 && p.parents.some(id => person.parents.includes(id)));
+        Siblings.forEach(sibling => {
+            const relation = sibling.gender === 'male' ? 'Brother' : 'Sister';
+            family.push({name: '${sibling.firstName} ${sibling.lastName}', relation: relation});
+        });
+    }
+    return family;
+
+}
+
+
 
 function displayPeople(displayTitle, peopleToDisplay) {
     const formatedPeopleDisplayText = peopleToDisplay.map(person => `${person.firstName} ${person.lastName}`).join('\n');
